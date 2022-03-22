@@ -39,7 +39,7 @@ public class AuthenticationController {
             return SimpleResponseDTO
                             .builder()
                             .success(false)
-                            .message("Incorrect username or password.")
+                            .message(e.getMessage())
                             .build();
         }
     }
@@ -57,7 +57,7 @@ public class AuthenticationController {
             return SimpleResponseDTO
                             .builder()
                             .success(false)
-                            .message("Failed to log you out")
+                            .message(e.getMessage())
                             .build();
         }
     }
