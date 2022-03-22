@@ -1,6 +1,9 @@
 package io.muzoo.ssc.project.backend.auth;
 
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,11 @@ public class AuthenticationController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         try {
+            // Check if there is a current user logged in, if so log that user out first
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User) {
+                request.logout();
+            }
             request.login(username, password);
             return SimpleResponseDTO
                             .builder()
@@ -30,7 +38,7 @@ public class AuthenticationController {
         } catch (ServletException e) {
             return SimpleResponseDTO
                             .builder()
-                            .success(true)
+                            .success(false)
                             .message("Incorrect username or password.")
                             .build();
         }
@@ -48,7 +56,7 @@ public class AuthenticationController {
         } catch (ServletException e) {
             return SimpleResponseDTO
                             .builder()
-                            .success(true)
+                            .success(false)
                             .message("Failed to log you out")
                             .build();
         }
