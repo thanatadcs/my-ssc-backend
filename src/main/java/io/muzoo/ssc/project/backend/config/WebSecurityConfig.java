@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		// Permit root and /api/login and /api/logout
 		http.authorizeRequests()
-				.antMatchers("/", "/api/login", "/api/logout").permitAll();
+				.antMatchers("/", "/api/login", "/api/logout", "/api/whoami").permitAll();
 		// permit all OPTIONS requests
 		http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			String ajaxJson = AjaxUtils.convertToString(
 					SimpleResponseDTO
 							.builder()
-							.success(true)
+							.success(false)
 							.message("Forbidden")
 							.build()
 			);
