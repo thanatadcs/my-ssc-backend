@@ -19,4 +19,5 @@ public class WhoamiDTO {
 
     private String role;
 
+    private float timestamp;
 }

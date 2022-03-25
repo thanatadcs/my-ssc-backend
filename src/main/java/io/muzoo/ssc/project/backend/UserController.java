@@ -80,6 +80,7 @@ public class UserController {
     public SimpleResponseDTO update(HttpServletRequest request) {
         String username = request.getParameter("username");
         float timestamp = Float.parseFloat(request.getParameter("timestamp"));
+
         User user = userRepository.findFirstByUsername(username);
         if (user == null) {
             return SimpleResponseDTO

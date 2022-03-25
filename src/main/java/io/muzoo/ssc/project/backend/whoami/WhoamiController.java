@@ -35,6 +35,7 @@ public class WhoamiController {
                         .name(u.getUsername()) // we don't have name field so use username
                         .role(u.getRole())
                         .username(u.getUsername())
+                        .timestamp(u.getTimestamp())
                         .build();
             }
         } catch (Exception e) {
