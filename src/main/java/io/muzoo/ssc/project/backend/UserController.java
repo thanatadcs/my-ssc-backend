@@ -1,7 +1,6 @@
 package io.muzoo.ssc.project.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +30,7 @@ public class UserController {
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
             user.setRole("USER");
+            user.setTimestamp(0);
             userRepository.save(user);
             return SimpleResponseDTO
                     .builder()
@@ -41,7 +41,7 @@ public class UserController {
             return SimpleResponseDTO
                     .builder()
                     .success(false)
-                    .message("Username already existed.")
+                    .message(String.format("Username %s already exists", username))
                     .build();
         }
     }
@@ -55,23 +55,54 @@ public class UserController {
             return SimpleResponseDTO
                     .builder()
                     .success(false)
-                    .message("User not found.")
+                    .message(String.format("Can't delete, username %s not found", username))
                     .build();
         } else {
-            Long count = userRepository.deleteByUsername(username);
+            int count = userRepository.deleteByUsername(username);
             if (count > 0) {
                 return SimpleResponseDTO
                         .builder()
                         .success(true)
-                        .message("Successfully delete user.")
+                        .message(String.format("Successfully delete user %s", username))
                         .build();
             } else {
                 return SimpleResponseDTO
                         .builder()
                         .success(false)
-                        .message("Fail to delete.")
+                        .message(String.format("Failed delete user %s", username))
                         .build();
             }
         }
     }
+
+    @Transactional
+    @PostMapping("/api/update")
+    public SimpleResponseDTO update(HttpServletRequest request) {
+        String username = request.getParameter("username");
+        float timestamp = Float.parseFloat(request.getParameter("timestamp"));
+        User user = userRepository.findFirstByUsername(username);
+        if (user == null) {
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message(String.format("Can't update username %s not found", username))
+                    .build();
+        } else {
+            int count = userRepository.updateTimestampByUsername(username, timestamp);
+            if (count > 0) {
+                return SimpleResponseDTO
+                        .builder()
+                        .success(true)
+                        .message(String.format("Successfully update timestamp of %s", username))
+                        .build();
+            } else {
+                return SimpleResponseDTO
+                        .builder()
+                        .success(false)
+                        .message(String.format("Failed update timestamp of %s", username))
+                        .build();
+            }
+        }
+    }
+
 }
