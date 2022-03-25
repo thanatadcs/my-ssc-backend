@@ -28,5 +28,13 @@ public class InitApplicationRunner implements ApplicationRunner {
             admin.setRole("USER");
             userRepository.save(admin);
         }
+        User sai = userRepository.findFirstByUsername("sai");
+        if (sai == null) {
+            sai = new User();
+            sai.setUsername("sai");
+            sai.setPassword(passwordEncoder.encode("123456"));
+            sai.setRole("USER");
+            userRepository.save(sai);
+        }
     }
 }
