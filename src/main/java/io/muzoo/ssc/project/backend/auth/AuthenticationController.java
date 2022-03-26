@@ -32,7 +32,7 @@ public class AuthenticationController {
             return SimpleResponseDTO
                             .builder()
                             .success(false)
-                            .message(e.getMessage())
+                            .message("Failed to login.")
                             .build();
         }
     }
@@ -40,18 +40,28 @@ public class AuthenticationController {
     @GetMapping("/api/logout")
     public SimpleResponseDTO logout(HttpServletRequest request) {
         try {
-            request.logout();
-            return SimpleResponseDTO
-                            .builder()
-                            .success(true)
-                            .message("You are successfully logged out")
-                            .build();
+            // Check if there is a current user logged in, if so log that user out first
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User) {
+                request.logout();
+                return SimpleResponseDTO
+                        .builder()
+                        .success(true)
+                        .message("You are logged out successfully.")
+                        .build();
+            } else {
+                return SimpleResponseDTO
+                        .builder()
+                        .success(false)
+                        .message("Can't logged out, you are not logged in.")
+                        .build();
+            }
         } catch (ServletException e) {
             return SimpleResponseDTO
-                            .builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .build();
+                    .builder()
+                    .success(false)
+                    .message("Failed to logout.")
+                    .build();
         }
     }
 }
