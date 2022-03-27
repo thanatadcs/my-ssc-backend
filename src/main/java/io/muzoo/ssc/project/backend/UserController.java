@@ -2,7 +2,9 @@ package io.muzoo.ssc.project.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +49,7 @@ public class UserController {
     }
 
     @Transactional
-    @PostMapping("/api/delete")
+    @DeleteMapping("/api/delete")
     public SimpleResponseDTO delete(HttpServletRequest request) {
         String username = request.getParameter("username");
         User user = userRepository.findFirstByUsername(username);
@@ -76,7 +78,7 @@ public class UserController {
     }
 
     @Transactional
-    @PostMapping("/api/update")
+    @PutMapping("/api/update")
     public SimpleResponseDTO update(HttpServletRequest request) {
         String username = request.getParameter("username");
         float timestamp = Float.parseFloat(request.getParameter("timestamp"));
